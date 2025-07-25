@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-// Importa tus pantallas (asegúrate de que existan estos archivos)
 import 'login.dart';
 import 'home.dart';
 import 'register.dart';
@@ -39,7 +38,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/', // Ruta inicial es la pantalla de autenticación
+      initialRoute: '/',
       routes: {
         '/': (context) => const AuthScreen(),
         '/login': (context) => LoginScreen(),
