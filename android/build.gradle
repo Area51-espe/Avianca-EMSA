@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.0'
+        classpath 'com.google.gms:google-services:4.3.15' // 👈 NECESARIO PARA FIREBASE
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -16,5 +28,3 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-
-classpath 'com.google.gms:google-services:4.3.15'  // Al final del bloque
