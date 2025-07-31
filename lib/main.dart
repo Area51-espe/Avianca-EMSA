@@ -4,11 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'login.dart';
 import 'home.dart';
 import 'register.dart';
+import 'dashboard.dart'; // ← Asegúrate de tener este archivo creado
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicialización manual de Firebase
+  // Inicializar Firebase con configuración manual
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyCFRnB5paigeA1UkUxovJEra7eKRulzthg",
@@ -44,6 +45,10 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
         '/register': (context) => RegisterScreen(),
+        '/dashboard': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map;
+          return DashboardScreen(userEmail: args['email']);
+        },
       },
     );
   }
