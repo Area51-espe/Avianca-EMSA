@@ -1,6 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:aviancataxi/src/backend/auth/login_page.dart';
+import 'package:aviancataxi/src/frontend/home_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // ← MUY IMPORTANTE
+
   runApp(const MyApp());
 }
 
@@ -10,46 +17,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Proyecto Final', // Changed the app title
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+      title: 'Avianca App',
+      debugShowCheckedModeBanner: false,
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          // Si está autenticado, va directo al HomePage
+          if (snapshot.connectionState == ConnectionState.active) {
+            final user = snapshot.data;
+            return user != null ? HomePage(user: user) : const LoginPage();
+          }
+          return const Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(child: CircularProgressIndicator()),
+          );
+        },
       ),
-      home: const MyHomePage(title: 'Proyecto Final'), // Changed the home page title
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget { // Changed to StatelessWidget
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title), // Uses the title passed to the widget
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Icon(
-              Icons.home, // Home icon
-              size: 100.0, // Adjust size as needed
-              color: Colors.deepPurple, // Adjust color as needed
-            ),
-            const SizedBox(height: 20), // Adds some space between the icon and text
-            Text(
-              'Proyecto Final', // The desired text
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      // Removed the floatingActionButton
     );
   }
 }
