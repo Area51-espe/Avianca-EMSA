@@ -4,9 +4,25 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:aviancataxi/src/backend/auth/login_page.dart';
 import 'package:aviancataxi/src/frontend/home_page.dart';
 
+import 'login.dart';
+import 'home.dart';
+import 'register.dart';
+import 'dashboard.dart'; // ← Asegúrate de tener este archivo creado
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // ← MUY IMPORTANTE
+
+  // Inicializar Firebase con configuración manual
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyCFRnB5paigeA1UkUxovJEra7eKRulzthg",
+      appId: "1:313384693994:android:5e5f745be19da865d76793",
+      messagingSenderId: "313384693994",
+      projectId: "appaviancaemsa",
+    ),
+  );
+
+  print('Conexión a Firebase: ${Firebase.apps.isNotEmpty ? 'Éxito' : 'Falló'}');
 
   runApp(const MyApp());
 }
@@ -17,21 +33,70 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Avianca App',
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          // Si está autenticado, va directo al HomePage
-          if (snapshot.connectionState == ConnectionState.active) {
-            final user = snapshot.data;
-            return user != null ? HomePage(user: user) : const LoginPage();
-          }
-          return const Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(child: CircularProgressIndicator()),
-          );
+      title: 'Avianca EMSA',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const AuthScreen(),
+        '/login': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen(),
+        '/register': (context) => RegisterScreen(),
+        '/dashboard': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map;
+          return DashboardScreen(userEmail: args['email']);
         },
+      },
+    );
+  }
+}
+
+class AuthScreen extends StatelessWidget {
+  const AuthScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Autenticación'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                child: const Text('Iniciar Sesión'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/register');
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  backgroundColor: Colors.grey[200],
+                  foregroundColor: Colors.blue,
+                ),
+                child: const Text('Registrarse'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
