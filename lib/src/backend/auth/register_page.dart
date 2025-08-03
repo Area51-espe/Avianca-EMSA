@@ -1,7 +1,6 @@
 import 'package:aviancataxi/src/backend/auth/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -30,28 +29,25 @@ class _RegisterPageState extends State<RegisterPage> {
         password: password,
       );
 
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const AlertDialog(
-          backgroundColor: Color(0xFF1A1A40),
-          title: Text(
-            '¡Registro Exitoso!',
-            style: TextStyle(color: Colors.white),
+      // Mostrar SnackBar de éxito después de un ciclo de render
+      Future.microtask(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Registro exitoso. Inicia sesión.'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
           ),
-          content: Text(
-            'Tu cuenta ha sido creada.',
-            style: TextStyle(color: Colors.white70),
-          ),
-        ),
-      );
+        );
+      });
 
-      await Future.delayed(const Duration(seconds: 2));
-      Navigator.of(context).pop(); // Cierra el diálogo
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-      );
+      // Redirigir al login y limpiar historial
+      Future.delayed(const Duration(milliseconds: 300), () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+          (route) => false,
+        );
+      });
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'Error al registrar.';
       if (e.code == 'email-already-in-use') {

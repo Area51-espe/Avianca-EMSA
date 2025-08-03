@@ -24,9 +24,10 @@ class _LoginPageState extends State<LoginPage> {
       );
       User? user = userCredential.user;
       if (user != null) {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => HomePage(user: user)),
+          (route) => false,
         );
       }
     } on FirebaseAuthException catch (e) {
