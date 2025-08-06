@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+//importacion de funciones
+import 'package:aviancataxi/utils/funciones.dart';
 
 class DashboardScreen extends StatelessWidget {
   final String userEmail;
@@ -52,10 +54,13 @@ class DashboardScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Hola,", style: TextStyle(color: Colors.white)),
+                          const Text("Hola,",
+                              style: TextStyle(color: Colors.white)),
                           Text(
                             userEmail,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                           const Text(
                             "Conectado al sistema",
@@ -76,10 +81,14 @@ class DashboardScreen extends StatelessWidget {
                 mainAxisSpacing: 16,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _buildTile(Icons.dashboard_customize, "Inicio", Colors.blueAccent),
-                  _buildTile(Icons.receipt_long, "Registros", const Color(0xFF1C2039)),
+                  _buildTile(
+                      Icons.dashboard_customize, "Inicio", Colors.blueAccent),
+                  _buildTile(
+                      Icons.receipt_long, "Registros", const Color(0xFF1C2039),
+                      onTap: () => irARegistroRecorrido(context)),
                   _buildTile(Icons.person, "Perfil", const Color(0xFF1C2039)),
-                  _buildTile(Icons.headset_mic, "Soporte", const Color(0xFF1C2039)),
+                  _buildTile(
+                      Icons.headset_mic, "Soporte", const Color(0xFF1C2039)),
                 ],
               ),
               const SizedBox(height: 100),
@@ -109,23 +118,29 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTile(IconData icon, String title, Color backgroundColor) {
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 32, color: Colors.cyanAccent),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ],
+//añadido la funcion de ingreso a registro de recorrido
+
+  Widget _buildTile(IconData icon, String title, Color backgroundColor,
+      {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 32, color: Colors.cyanAccent),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
         ),
       ),
     );
