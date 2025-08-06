@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Panel de Control',
+          'Menu de inicio',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
