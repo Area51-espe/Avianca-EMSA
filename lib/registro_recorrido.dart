@@ -62,7 +62,9 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
   }
 
   void guardarRecorrido() {
+      // Verifica primero los campos validados con TextFormField
     if (_formKey.currentState!.validate()) {
+          // Validación adicional para campos no controlados por TextFormField
       if (tipoRecorrido == null) {
         mostrarError('Debe seleccionar el tipo de recorrido');
         return;
@@ -88,7 +90,8 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
         return;
       }
 
-      // Si pasa todas las validaciones
+
+          // Si todas las validaciones pasan, se muestra mensaje de éxito
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Recorrido guardado correctamente")),
       );
