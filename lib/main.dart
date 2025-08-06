@@ -8,6 +8,7 @@ import 'login.dart';
 import 'home.dart';
 import 'register.dart';
 import 'dashboard.dart'; // ← Asegúrate de tener este archivo creado
+import 'registro_recorrido.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+
         '/': (context) => const AuthScreen(),
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),

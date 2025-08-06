@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Asegúrate de que esta importación esté presente
+import 'package:intl/intl.dart';
 
 class RegistroRecorridoScreen extends StatefulWidget {
   const RegistroRecorridoScreen({super.key});
@@ -9,6 +9,8 @@ class RegistroRecorridoScreen extends StatefulWidget {
 }
 
 class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   String? tipoRecorrido;
   DateTime? fecha;
   TimeOfDay? hora;
@@ -119,9 +121,11 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
   }
 
   void guardarRecorrido() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Recorrido guardado correctamente")),
-    );
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Recorrido guardado correctamente")),
+      );
+    }
   }
 
   @override
@@ -136,132 +140,141 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Tipo de Recorrido", style: TextStyle(color: Colors.white)),
-            const SizedBox(height: 10),
-            buildToggleGroup<String>(
-              items: tipos,
-              selected: tipoRecorrido,
-              onSelected: (val) => setState(() => tipoRecorrido = val),
-              labelBuilder: (val) => val,
-            ),
-            const SizedBox(height: 20),
-            const Text("Fecha", style: TextStyle(color: Colors.white)),
-            const SizedBox(height: 8),
-            GestureDetector(
-              onTap: seleccionarFecha,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1C1C3A),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        fecha != null
-                            ? DateFormat('dd/MM/yyyy').format(fecha!) // Formatea la fecha
-                            : 'Seleccione una fecha',
-                        style: const TextStyle(color: Colors.white70),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Tipo de Recorrido", style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 10),
+              buildToggleGroup<String>(
+                items: tipos,
+                selected: tipoRecorrido,
+                onSelected: (val) => setState(() => tipoRecorrido = val),
+                labelBuilder: (val) => val,
+              ),
+              const SizedBox(height: 20),
+              const Text("Fecha", style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: seleccionarFecha,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1C1C3A),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          fecha != null
+                              ? DateFormat('dd/MM/yyyy').format(fecha!)
+                              : 'Seleccione una fecha',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
                       ),
-                    ),
-                    const Icon(Icons.calendar_today, color: Colors.cyanAccent),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text("Hora", style: TextStyle(color: Colors.white)),
-            const SizedBox(height: 8),
-            GestureDetector(
-              onTap: seleccionarHora,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1C1C3A),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        hora != null
-                            ? hora!.format(context)
-                            : 'Seleccione una hora',
-                        style: const TextStyle(color: Colors.white70),
-                      ),
-                    ),
-                    const Icon(Icons.access_time, color: Colors.cyanAccent),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            buildDropdown<String>(
-              label: "Destino",
-              value: destino,
-              items: destinos,
-              onChanged: (val) => setState(() => destino = val),
-              labelBuilder: (val) => val,
-            ),
-            const SizedBox(height: 20),
-            const Text("Número de Pasajeros", style: TextStyle(color: Colors.white)),
-            const SizedBox(height: 10),
-            buildToggleGroup<int>(
-              items: [1, 2, 3, 4],
-              selected: pasajeros,
-              onSelected: (val) => setState(() => pasajeros = val),
-              labelBuilder: (val) => val.toString(),
-            ),
-            const SizedBox(height: 20),
-            const Text("¿Lleva equipaje?", style: TextStyle(color: Colors.white)),
-            const SizedBox(height: 10),
-            buildToggleGroup<bool>(
-              items: [true, false],
-              selected: llevaEquipaje,
-              onSelected: (val) => setState(() => llevaEquipaje = val),
-              labelBuilder: (val) => val ? "Sí" : "No",
-            ),
-            const SizedBox(height: 20),
-            const Text("Datos del Cliente", style: TextStyle(color: Colors.white)),
-            const SizedBox(height: 8),
-            TextField(
-              controller: nombreClienteController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Nombre del cliente',
-                hintStyle: const TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: const Color(0xFF1C1C3A),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: guardarRecorrido,
-                icon: const Icon(Icons.save, color: Colors.black),
-                label: const Text("GUARDAR RECORRIDO"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.cyanAccent,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                      const Icon(Icons.calendar_today, color: Colors.cyanAccent),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              const Text("Hora", style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: seleccionarHora,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1C1C3A),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          hora != null
+                              ? hora!.format(context)
+                              : 'Seleccione una hora',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                      ),
+                      const Icon(Icons.access_time, color: Colors.cyanAccent),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              buildDropdown<String>(
+                label: "Destino",
+                value: destino,
+                items: destinos,
+                onChanged: (val) => setState(() => destino = val),
+                labelBuilder: (val) => val,
+              ),
+              const SizedBox(height: 20),
+              const Text("Número de Pasajeros", style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 10),
+              buildToggleGroup<int>(
+                items: [1, 2, 3, 4],
+                selected: pasajeros,
+                onSelected: (val) => setState(() => pasajeros = val),
+                labelBuilder: (val) => val.toString(),
+              ),
+              const SizedBox(height: 20),
+              const Text("¿Lleva equipaje?", style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 10),
+              buildToggleGroup<bool>(
+                items: [true, false],
+                selected: llevaEquipaje,
+                onSelected: (val) => setState(() => llevaEquipaje = val),
+                labelBuilder: (val) => val ? "Sí" : "No",
+              ),
+              const SizedBox(height: 20),
+              const Text("Datos del Cliente", style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: nombreClienteController,
+                style: const TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'El nombre del cliente es obligatorio';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintText: 'Nombre del cliente',
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: const Color(0xFF1C1C3A),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: guardarRecorrido,
+                  icon: const Icon(Icons.save, color: Colors.black),
+                  label: const Text("GUARDAR RECORRIDO"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.cyanAccent,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
