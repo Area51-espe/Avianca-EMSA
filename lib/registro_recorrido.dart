@@ -52,6 +52,51 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
     }
   }
 
+  void mostrarError(String mensaje) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensaje),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
+
+  void guardarRecorrido() {
+    if (_formKey.currentState!.validate()) {
+      if (tipoRecorrido == null) {
+        mostrarError('Debe seleccionar el tipo de recorrido');
+        return;
+      }
+      if (fecha == null) {
+        mostrarError('Debe seleccionar una fecha');
+        return;
+      }
+      if (hora == null) {
+        mostrarError('Debe seleccionar una hora');
+        return;
+      }
+      if (destino == null) {
+        mostrarError('Debe seleccionar un destino');
+        return;
+      }
+      if (pasajeros == null) {
+        mostrarError('Debe seleccionar el número de pasajeros');
+        return;
+      }
+      if (llevaEquipaje == null) {
+        mostrarError('Debe indicar si lleva equipaje');
+        return;
+      }
+
+      // Si pasa todas las validaciones
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Recorrido guardado correctamente")),
+      );
+
+      // Aquí puedes guardar o enviar los datos a una API
+    }
+  }
+
   Widget buildToggleGroup<T>({
     required List<T> items,
     required T? selected,
@@ -118,14 +163,6 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
         ),
       ],
     );
-  }
-
-  void guardarRecorrido() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Recorrido guardado correctamente")),
-      );
-    }
   }
 
   @override
