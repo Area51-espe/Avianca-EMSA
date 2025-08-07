@@ -88,7 +88,8 @@ class DashboardScreen extends StatelessWidget {
                       onTap: () => irARegistroRecorrido(context)),
                   _buildTile(Icons.person, "Perfil", const Color(0xFF1C2039)),
                   _buildTile(
-                      Icons.headset_mic, "Soporte", const Color(0xFF1C2039)),
+                      Icons.headset_mic, "Soporte", const Color(0xFF1C2039),
+                      onTap: () => mostrarSoporte(context)),
                 ],
               ),
               const SizedBox(height: 100),
