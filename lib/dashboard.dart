@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'registro_recorrido.dart'; // Asegúrate de que la ruta del archivo sea correcta
 
 class DashboardScreen extends StatelessWidget {
   final String userEmail;
@@ -102,7 +103,14 @@ class DashboardScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.cyanAccent,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RegistroRecorridoScreen(),
+            ),
+          );
+        },
         child: const Icon(Icons.add, color: Colors.black),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
