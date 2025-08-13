@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// Importa tu función para generar el Excel EMSA-56
+import 'export/export_emsa56_demo.dart';
+
 class RegistroRecorridoScreen extends StatefulWidget {
   const RegistroRecorridoScreen({super.key});
 
@@ -21,6 +24,29 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
 
   final List<String> tipos = ['Entrada', 'Salida', 'Cancelada - Pagada', 'Maletas'];
   final List<String> destinos = ['Quito', 'Guayaquil', 'Cuenca', 'Latacunga'];
+
+  bool _exportando = false;
+
+  Future<void> _exportarExcel() async {
+    if (_exportando) return;
+    setState(() => _exportando = true);
+    try {
+      await generarExcelDemoEmsa56();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Excel generado correctamente')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al generar Excel: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _exportando = false);
+    }
+  }
 
   void seleccionarFecha() async {
     final DateTime? picked = await showDatePicker(
@@ -62,9 +88,9 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
   }
 
   void guardarRecorrido() {
-      // Verifica primero los campos validados con TextFormField
+    // Verifica primero los campos validados con TextFormField
     if (_formKey.currentState!.validate()) {
-          // Validación adicional para campos no controlados por TextFormField
+      // Validación adicional para campos no controlados por TextFormField
       if (tipoRecorrido == null) {
         mostrarError('Debe seleccionar el tipo de recorrido');
         return;
@@ -90,8 +116,7 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
         return;
       }
 
-
-          // Si todas las validaciones pasan, se muestra mensaje de éxito
+      // Si todas las validaciones pasan, se muestra mensaje de éxito
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Recorrido guardado correctamente")),
       );
@@ -179,6 +204,21 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.cyanAccent),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Exportar EMSA-56 (Excel)',
+            onPressed: _exportando ? null : _exportarExcel,
+            icon: _exportando
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: 18, height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.cyanAccent),
+                    ),
+                  )
+                : const Icon(Icons.file_download, color: Colors.cyanAccent),
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -310,6 +350,27 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _exportando ? null : _exportarExcel,
+                  icon: _exportando
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.file_download),
+                  label: Text(_exportando ? 'Generando Excel…' : 'EXPORTAR REGISTRO'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.cyanAccent,
+                    side: const BorderSide(color: Colors.cyanAccent),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
                 ),
               ),
