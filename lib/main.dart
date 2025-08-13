@@ -9,6 +9,7 @@ import 'home.dart';
 import 'register.dart';
 import 'dashboard.dart'; // ← Asegúrate de tener este archivo creado
 import 'registro_recorrido.dart';
+import 'plantilla_exportacion.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +46,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+        // en MaterialApp.routes
+//'/plantilla-exportacion': (context) => const PlantillaExportacionScreen(),
+
 //'/': (context) => const RegistroRecorridoScreen(),
     '/': (context) => const AuthScreen(),
         '/login': (context) => LoginScreen(),
