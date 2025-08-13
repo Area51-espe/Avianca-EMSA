@@ -45,14 +45,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0B0C2A),
+      backgroundColor: const Color(ffff4d),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
           'Panel de Control',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
             shadows: [Shadow(color: Colors.cyanAccent, blurRadius: 10)],
           ),
