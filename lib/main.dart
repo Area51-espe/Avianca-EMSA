@@ -46,11 +46,16 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+
         // en MaterialApp.routes
 //'/plantilla-exportacion': (context) => const PlantillaExportacionScreen(),
 
 //'/': (context) => const RegistroRecorridoScreen(),
     '/': (context) => const AuthScreen(),
+
+        //'/': (context) => const RegistroRecorridoScreen(),
+        '/': (context) => const AuthScreen(),
+
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
         '/register': (context) => RegisterScreen(),
