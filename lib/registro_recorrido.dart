@@ -33,9 +33,7 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
         child: child!,
       ),
     );
-    if (picked != null) {
-      setState(() => fecha = picked);
-    }
+    if (picked != null) setState(() => fecha = picked);
   }
 
   void seleccionarHora() async {
@@ -47,133 +45,120 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
         child: child!,
       ),
     );
-    if (picked != null) {
-      setState(() => hora = picked);
-    }
+    if (picked != null) setState(() => hora = picked);
   }
 
-  void mostrarError(String mensaje) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(mensaje),
-        backgroundColor: Colors.redAccent,
-      ),
-    );
-  }
-
-  void guardarRecorrido() {
-    if (_formKey.currentState!.validate()) {
-      if (tipoRecorrido == null) {
-        mostrarError('Debe seleccionar el tipo de recorrido');
-        return;
-      }
-      if (fecha == null) {
-        mostrarError('Debe seleccionar una fecha');
-        return;
-      }
-      if (hora == null) {
-        mostrarError('Debe seleccionar una hora');
-        return;
-      }
-      if (destino == null) {
-        mostrarError('Debe seleccionar un destino');
-        return;
-      }
-      if (pasajeros == null) {
-        mostrarError('Debe seleccionar el número de pasajeros');
-        return;
-      }
-      if (llevaEquipaje == null) {
-        mostrarError('Debe indicar si lleva equipaje');
-        return;
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Recorrido guardado correctamente")),
-      );
-
-      // Aquí puedes guardar o enviar los datos a una API
-    }
-  }
-
-  Widget buildToggleGroup<T>({
+  Widget buildToggleFormField<T>({
     required List<T> items,
     required T? selected,
     required void Function(T) onSelected,
     required String Function(T) labelBuilder,
+    required String errorText,
   }) {
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: items.map((item) {
-        final bool isSelected = item == selected;
-        return GestureDetector(
-          onTap: () => onSelected(item),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.cyanAccent : const Color(0xFF3C3C3C),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isSelected ? Colors.white : Colors.transparent,
-                width: 2,
-              ),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: Colors.white.withOpacity(0.6),
-                        blurRadius: 8,
-                        spreadRadius: 1,
+    return FormField<T>(
+      validator: (value) => value == null ? errorText : null,
+      builder: (state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: items.map((item) {
+                final bool isSelected = item == selected;
+                return GestureDetector(
+                  onTap: () {
+                    onSelected(item);
+                    state.didChange(item);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.cyanAccent : const Color(0xFF3C3C3C),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected ? Colors.white : Colors.transparent,
+                        width: 2,
                       ),
-                    ]
-                  : [],
+                    ),
+                    child: Text(
+                      labelBuilder(item),
+                      style: TextStyle(
+                        color: isSelected ? Colors.black : Colors.white70,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
-            child: Text(
-              labelBuilder(item),
-              style: TextStyle(
-                color: isSelected ? Colors.black : Colors.white70,
-                fontWeight: FontWeight.bold,
+            if (state.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(
+                  state.errorText!,
+                  style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                ),
               ),
-            ),
-          ),
+          ],
         );
-      }).toList(),
+      },
     );
   }
 
-  Widget buildDropdown<T>({
+  Widget buildDropdownFormField<T>({
     required String label,
     required T? value,
     required List<T> items,
     required void Function(T?) onChanged,
     required String Function(T) labelBuilder,
+    required String errorText,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: const TextStyle(color: Colors.white)),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1C1C3A),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: DropdownButtonFormField<T>(
-            dropdownColor: const Color(0xFF1C1C3A),
-            value: value,
-            items: items.map((item) {
-              return DropdownMenuItem(
-                value: item,
-                child: Text(labelBuilder(item), style: const TextStyle(color: Colors.white)),
-              );
-            }).toList(),
-            onChanged: onChanged,
-            decoration: const InputDecoration(border: InputBorder.none),
-            iconEnabledColor: Colors.cyanAccent,
-          ),
-        ),
-      ],
+    return FormField<T>(
+      validator: (val) => val == null ? errorText : null,
+      builder: (state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1C1C3A),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: state.hasError ? Colors.redAccent : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+              child: DropdownButtonFormField<T>(
+                value: value,
+                items: items.map((item) {
+                  return DropdownMenuItem(
+                    value: item,
+                    child: Text(labelBuilder(item), style: const TextStyle(color: Colors.white)),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  onChanged(val);
+                  state.didChange(val);
+                },
+                decoration: const InputDecoration(border: InputBorder.none),
+                dropdownColor: const Color(0xFF1C1C3A),
+                iconEnabledColor: Colors.cyanAccent,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            if (state.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(
+                  state.errorText!,
+                  style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -198,89 +183,133 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
             children: [
               const Text("Tipo de Recorrido", style: TextStyle(color: Colors.white)),
               const SizedBox(height: 10),
-              buildToggleGroup<String>(
+              buildToggleFormField<String>(
                 items: tipos,
                 selected: tipoRecorrido,
                 onSelected: (val) => setState(() => tipoRecorrido = val),
                 labelBuilder: (val) => val,
+                errorText: "Debe seleccionar un tipo de recorrido",
               ),
               const SizedBox(height: 20),
               const Text("Fecha", style: TextStyle(color: Colors.white)),
               const SizedBox(height: 8),
-              GestureDetector(
-                onTap: seleccionarFecha,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1C1C3A),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
+              FormField<DateTime>(
+                validator: (_) => fecha == null ? "Debe seleccionar una fecha" : null,
+                builder: (state) {
+                  return Column(
                     children: [
-                      Expanded(
-                        child: Text(
-                          fecha != null
-                              ? DateFormat('dd/MM/yyyy').format(fecha!)
-                              : 'Seleccione una fecha',
-                          style: const TextStyle(color: Colors.white70),
+                      GestureDetector(
+                        onTap: seleccionarFecha,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1C1C3A),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: state.hasError ? Colors.redAccent : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  fecha != null
+                                      ? DateFormat('dd/MM/yyyy').format(fecha!)
+                                      : 'Seleccione una fecha',
+                                  style: const TextStyle(color: Colors.white70),
+                                ),
+                              ),
+                              const Icon(Icons.calendar_today, color: Colors.cyanAccent),
+                            ],
+                          ),
                         ),
                       ),
-                      const Icon(Icons.calendar_today, color: Colors.cyanAccent),
+                      if (state.hasError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Text(
+                            state.errorText!,
+                            style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                          ),
+                        ),
                     ],
-                  ),
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 20),
               const Text("Hora", style: TextStyle(color: Colors.white)),
               const SizedBox(height: 8),
-              GestureDetector(
-                onTap: seleccionarHora,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1C1C3A),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
+              FormField<TimeOfDay>(
+                validator: (_) => hora == null ? "Debe seleccionar una hora" : null,
+                builder: (state) {
+                  return Column(
                     children: [
-                      Expanded(
-                        child: Text(
-                          hora != null
-                              ? hora!.format(context)
-                              : 'Seleccione una hora',
-                          style: const TextStyle(color: Colors.white70),
+                      GestureDetector(
+                        onTap: seleccionarHora,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1C1C3A),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: state.hasError ? Colors.redAccent : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  hora != null ? hora!.format(context) : 'Seleccione una hora',
+                                  style: const TextStyle(color: Colors.white70),
+                                ),
+                              ),
+                              const Icon(Icons.access_time, color: Colors.cyanAccent),
+                            ],
+                          ),
                         ),
                       ),
-                      const Icon(Icons.access_time, color: Colors.cyanAccent),
+                      if (state.hasError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Text(
+                            state.errorText!,
+                            style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                          ),
+                        ),
                     ],
-                  ),
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 20),
-              buildDropdown<String>(
+              buildDropdownFormField<String>(
                 label: "Destino",
                 value: destino,
                 items: destinos,
                 onChanged: (val) => setState(() => destino = val),
                 labelBuilder: (val) => val,
+                errorText: "Debe seleccionar un destino",
               ),
               const SizedBox(height: 20),
               const Text("Número de Pasajeros", style: TextStyle(color: Colors.white)),
               const SizedBox(height: 10),
-              buildToggleGroup<int>(
+              buildToggleFormField<int>(
                 items: [1, 2, 3, 4],
                 selected: pasajeros,
                 onSelected: (val) => setState(() => pasajeros = val),
                 labelBuilder: (val) => val.toString(),
+                errorText: "Debe seleccionar el número de pasajeros",
               ),
               const SizedBox(height: 20),
               const Text("¿Lleva equipaje?", style: TextStyle(color: Colors.white)),
               const SizedBox(height: 10),
-              buildToggleGroup<bool>(
+              buildToggleFormField<bool>(
                 items: [true, false],
                 selected: llevaEquipaje,
                 onSelected: (val) => setState(() => llevaEquipaje = val),
                 labelBuilder: (val) => val ? "Sí" : "No",
+                errorText: "Debe indicar si lleva equipaje",
               ),
               const SizedBox(height: 20),
               const Text("Datos del Cliente", style: TextStyle(color: Colors.white)),
@@ -288,12 +317,9 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
               TextFormField(
                 controller: nombreClienteController,
                 style: const TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'El nombre del cliente es obligatorio';
-                  }
-                  return null;
-                },
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'El nombre del cliente es obligatorio'
+                    : null,
                 decoration: InputDecoration(
                   hintText: 'Nombre del cliente',
                   hintStyle: const TextStyle(color: Colors.white70),
@@ -309,7 +335,13 @@ class _RegistroRecorridoScreenState extends State<RegistroRecorridoScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: guardarRecorrido,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Recorrido guardado correctamente")),
+                      );
+                    }
+                  },
                   icon: const Icon(Icons.save, color: Colors.black),
                   label: const Text("GUARDAR RECORRIDO"),
                   style: ElevatedButton.styleFrom(
