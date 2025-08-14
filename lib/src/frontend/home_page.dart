@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:aviancataxi/src/backend/auth/login_page.dart';
 import 'package:aviancataxi/src/frontend/registrar_recorrido_page.dart'; // Importa la página de registrar recorrido
+import 'package:aviancataxi/src/frontend/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +46,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(ffff4d),
+      backgroundColor: const Color(0xFF1A1A40),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
