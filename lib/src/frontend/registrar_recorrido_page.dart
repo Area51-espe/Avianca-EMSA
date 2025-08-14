@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart'; // Para formatear la fecha
+import 'package:intl/intl.dart';
 
 class RegistrarRecorridoPage extends StatefulWidget {
   final User user;
@@ -53,9 +53,7 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
             style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(
@@ -83,9 +81,8 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
                   controller: _nombreController,
                   style: const TextStyle(color: Colors.white),
                   decoration: _inputStyle('Nombre del cliente'),
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Ingrese el nombre'
-                      : null,
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Ingrese el nombre' : null,
                 ),
               ),
               const SizedBox(height: 30),
@@ -114,7 +111,6 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
     );
   }
 
-  // Función para el diseño de los campos de texto
   InputDecoration _inputStyle(String hint) {
     return InputDecoration(
       hintText: hint,
@@ -129,7 +125,6 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
     );
   }
 
-  // Función para crear cada "Card" con su título y contenido
   Widget _buildCard(String title, Widget child) {
     return Container(
       width: double.infinity,
@@ -160,7 +155,6 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
     );
   }
 
-  // Campo de selección del tipo de recorrido
   Widget _buildTipoRecorrido() {
     return Wrap(
       spacing: 10,
@@ -173,12 +167,67 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
           selectedColor: Colors.cyanAccent,
           backgroundColor: Colors.grey.shade800,
           labelStyle: TextStyle(color: selected ? Colors.black : Colors.white),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(
+              color: selected ? Colors.white : Colors.transparent,
+              width: 2,
+            ),
+          ),
         );
       }).toList(),
     );
   }
 
-  // Selector de fecha
+  Widget _buildPasajerosSelector() {
+    return Wrap(
+      spacing: 10,
+      children: List.generate(4, (i) {
+        final num = i + 1;
+        final selected = _pasajeros == num;
+        return ChoiceChip(
+          label: Text('$num'),
+          selected: selected,
+          onSelected: (_) => setState(() => _pasajeros = num),
+          selectedColor: Colors.cyanAccent,
+          backgroundColor: Colors.grey.shade800,
+          labelStyle: TextStyle(color: selected ? Colors.black : Colors.white),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(
+              color: selected ? Colors.white : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildEquipajeSwitch() {
+    return Wrap(
+      spacing: 10,
+      children: ['Sí', 'No'].map((e) {
+        final bool selected = _equipaje == (e == 'Sí');
+        return ChoiceChip(
+          label: Text(e),
+          selected: selected,
+          onSelected: (_) => setState(() => _equipaje = (e == 'Sí')),
+          selectedColor: Colors.cyanAccent,
+          backgroundColor: Colors.grey.shade800,
+          labelStyle: TextStyle(color: selected ? Colors.black : Colors.white),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(
+              color: selected ? Colors.white : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildDatePicker() {
     return InkWell(
       onTap: () async {
@@ -218,7 +267,6 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
     );
   }
 
-  // Selector de hora
   Widget _buildHoraDropdown() {
     return DropdownButtonFormField<String>(
       value: _horaSeleccionada,
@@ -253,7 +301,6 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
     );
   }
 
-  // Campo de hora manual (si se selecciona "otra hora")
   Widget _buildManualHourInput() {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -271,7 +318,6 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
     );
   }
 
-  // Selector de destino
   Widget _buildDestinoDropdown() {
     return DropdownButtonFormField<String>(
       value: _destino,
@@ -294,45 +340,7 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
     );
   }
 
-  // Selector de número de pasajeros
-  Widget _buildPasajerosSelector() {
-    return Wrap(
-      spacing: 10,
-      children: List.generate(4, (i) {
-        final num = i + 1;
-        final selected = _pasajeros == num;
-        return ChoiceChip(
-          label: Text('$num'),
-          selected: selected,
-          onSelected: (_) => setState(() => _pasajeros = num),
-          selectedColor: Colors.cyanAccent,
-          backgroundColor: Colors.grey.shade800,
-          labelStyle: TextStyle(color: selected ? Colors.black : Colors.white),
-        );
-      }),
-    );
-  }
-
-  // Switch para "¿Lleva equipaje?"
-  Widget _buildEquipajeSwitch() {
-    return Wrap(
-      spacing: 10,
-      children: ['Sí', 'No'].map((e) {
-        final bool selected = _equipaje == (e == 'Sí');
-        return ChoiceChip(
-          label: Text(e),
-          selected: selected,
-          onSelected: (_) => setState(() => _equipaje = (e == 'Sí')),
-          selectedColor: Colors.cyanAccent,
-          backgroundColor: Colors.grey.shade800,
-          labelStyle: TextStyle(color: selected ? Colors.black : Colors.white),
-        );
-      }).toList(),
-    );
-  }
-
-  // Función para guardar el recorrido
-  void _guardarRecorrido() async {
+  void _guardarRecorrido() {
     if (_formKey.currentState?.validate() ?? false) {
       if (_tipoRecorrido == null ||
           _fecha == null ||
@@ -347,30 +355,21 @@ class _RegistrarRecorridoPageState extends State<RegistrarRecorridoPage> {
         return;
       }
 
-      try {
-        // Aquí puedes agregar la lógica para guardar en Firebase
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Recorrido registrado con éxito')),
+      );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Recorrido registrado con éxito')),
-        );
-
-        // Limpiar los campos después de guardar
-        setState(() {
-          _tipoRecorrido = null;
-          _fecha = null;
-          _horaSeleccionada = null;
-          _horaManualController.clear();
-          _otraHora = false;
-          _destino = null;
-          _pasajeros = null;
-          _equipaje = null;
-          _nombreController.clear();
-        });
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al guardar: $e')),
-        );
-      }
+      setState(() {
+        _tipoRecorrido = null;
+        _fecha = null;
+        _horaSeleccionada = null;
+        _horaManualController.clear();
+        _otraHora = false;
+        _destino = null;
+        _pasajeros = null;
+        _equipaje = null;
+        _nombreController.clear();
+      });
     }
   }
 }

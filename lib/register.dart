@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Asegúrate de tener Firebase configurado
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -22,12 +23,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final pass = _passwordController.text.trim();
 
     if (_formKey.currentState!.validate()) {
-      // Aquí podrías guardar los datos o conectar con backend/Firebase
+      // Mostrar mensaje inmediato
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Cuenta registrada: $nombre $apellido')),
       );
 
-      // Redirigir al dashboard con el correo
+      // Guardar usuario en Firebase en segundo plano
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: pass)
+          .then((userCredential) {
+        print('Usuario registrado en Firebase: ${userCredential.user?.email}');
+      }).catchError((error) {
+        print('Error al registrar en Firebase: $error');
+      });
+
+      // Navegación inmediata al dashboard
       Navigator.pushReplacementNamed(
         context,
         '/dashboard',
