@@ -1,14 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:aviancataxi/src/backend/auth/login_page.dart';
+import 'package:aviancataxi/src/frontend/home_page.dart';
 
 import 'login.dart';
 import 'home.dart';
 import 'register.dart';
+import 'dashboard.dart'; // ← Asegúrate de tener este archivo creado
+import 'registro_recorrido.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicialización manual de Firebase
+  // Inicializar Firebase con configuración manual
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyCFRnB5paigeA1UkUxovJEra7eKRulzthg",
@@ -40,10 +45,15 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+        //'/': (context) => const RegistroRecorridoScreen(),
         '/': (context) => const AuthScreen(),
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
         '/register': (context) => RegisterScreen(),
+        '/dashboard': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map;
+          return DashboardScreen(userEmail: args['email']);
+        },
       },
     );
   }
