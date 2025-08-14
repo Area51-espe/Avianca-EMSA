@@ -86,7 +86,8 @@ class DashboardScreen extends StatelessWidget {
                   _buildTile(
                       Icons.receipt_long, "Registros", const Color(0xFF1C2039),
                       onTap: () => irARegistroRecorrido(context)),
-                  _buildTile(Icons.person, "Perfil", const Color(0xFF1C2039)),
+                  _buildTile(Icons.person, "Perfil", const Color(0xFF1C2039),
+                      onTap: () => irARegistroExcel(context)),
                   _buildTile(
                       Icons.headset_mic, "Soporte", const Color(0xFF1C2039),
                       onTap: () => mostrarSoporte(context)),

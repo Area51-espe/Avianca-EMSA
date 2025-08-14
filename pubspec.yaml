@@ -20,6 +20,11 @@ dependencies:
   firebase_auth: ^4.16.0         # usa la más reciente también
   cloud_firestore: ^4.17.5       # misma lógica, usa la más reciente
   intl: ^0.17.0
+                                # Para formateo de fechas
+  excel: ^2.1.0              # Para crear archivos Excel
+  permission_handler: ^11.0.1 # Para permisos de almacenamiento
+  path_provider: ^2.1.1      # Para obtener rutas del sistema
+  open_file: ^3.3.2
 
 
 
